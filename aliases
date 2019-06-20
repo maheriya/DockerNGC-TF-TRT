@@ -1,0 +1,31 @@
+## Csh/Tcsh aliases for running docker
+set NGC_IMAGE="nvcr.io/nvidia/tensorflow:19.05-py2"
+set DCR_IMAGE="ngc-gpu/tf-trt:py2"
+alias a alias
+a dcrs         'docker images'
+a dcr_ps       'docker ps'
+a dcr_build    "docker build -t ${DCR_IMAGE} ."
+
+a dcr_tftrt     'nvidia-docker run -it --rm             \\
+        -p 8888:8888 -p 6006:6006                       \\
+        --shm-size=1g --ulimit memlock=-1               \\
+        --group-add sudo                                \\
+        --env="DISPLAY"                                 \\
+        --volume="/etc/group:/etc/group:ro"             \\
+        --volume="/etc/passwd:/etc/passwd:ro"           \\
+        --volume="/etc/shadow:/etc/shadow:ro"           \\
+        --volume="/etc/sudoers.d:/etc/sudoers.d:ro"     \\
+        --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"     \\
+        --volume="/home/${USER}:/home/${USER}"          \\
+        --volume="/IMAGESETS:/IMAGESETS"                \\
+        --volume="/notebooks:/tf/notebooks"             \\
+        --ipc=host                                      \\
+        --user ${uid}:${uid}                            \\
+        $DCR_IMAGE '
+
+a dcr_login_ngc 'docker login nvcr.io'
+a dcr_pullngc   "docker pull $NGC_IMAGE"
+a dcr_tcsh      'docker exec -it \!* /bin/tcsh'
+a dcr_bash      'docker exec -it \!* /bin/bash'
+
+#EOF
