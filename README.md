@@ -35,6 +35,8 @@ If everything works fine, move on to building the custom docker image using the 
 ### Custom Docker
 Now let's build the custom docker container image.
 
+Note: Please change user id to your own (or remove it) in the Dockerfile. You really only need the numeric uid and gid. I have not cleaned up the Dockerfile for this aspect yet.
+
 ```shell
 cd <this repo dir>
 docker build -t ngc-gpu/tf-trt:py2 .
@@ -55,14 +57,13 @@ nvidia-docker run -it --rm                              \
         --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"     \
         --volume="/home/${USER}:/home/${USER}"          \
         --volume="/IMAGESETS:/IMAGESETS"                \
-        --volume="/notebooks:/tf/notebooks"             \
         --ipc=host                                      \
         --user ${uid}:${uid}                            \
         ngc-gpu/tf-trt:py2
 ```
 
 Why Run it like that? Well, here is a list of advantages:
-- With --volume option, you can access all those directories as you would from non-container access including user permissions.
+- With --volume option, you can access all those directories as you would from non-container access including user permissions. For example, I have mapped `/home/${USER}` and `/IMAGESETS` directories that I need to access from within the container.
 - The user id will match the regular user id. For example, my user id is 'maheriya' on my Linux work station. I retain my home directory even within the container.
 - Retain sudo access (if normal user had sudo access).
 - the --shm-size and --ulimit line removes certain restrictions that are enabled on certain systems
