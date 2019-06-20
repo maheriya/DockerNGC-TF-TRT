@@ -38,7 +38,8 @@ Now let's build the custom docker container image.
 Note: Please change user id to your own (or remove it) in the Dockerfile. You really only need the numeric uid and gid. I have not cleaned up the Dockerfile for this aspect yet.
 
 ```shell
-cd <this repo dir>
+git clone git@github.com:maheriya/DockerNGC-TF-TRT.git
+cd DockerNGC-TF-TRT
 docker build -t ngc-gpu/tf-trt:py2 .
 ```
 
